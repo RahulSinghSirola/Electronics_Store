@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electronics Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: #333;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr;
+        }
+
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .product-card h3 {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+
+        .product-card p {
+            color: #777;
+            font-weight: bold;
+        }
+
+        .product-details-page {
+            background: #fff;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none; /* Initially hidden */
+        }
+
+        .product-details-page img {
+            max-width: 400px;
+            width: 100%;
+            display: block;
+            margin: 0 auto 2rem;
+            border-radius: 8px;
+        }
+
+        .back-btn {
+            background: #333;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-size: 0.9em;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+
+        .specs-list, .reviews-section {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .specs-list h4, .reviews-section h4 {
+            margin-top: 0;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+
+        .specs-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .specs-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .specs-list li:last-child {
+            border-bottom: none;
+        }
+
+        .review {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .review h5 {
+            margin: 0 0 0.5rem;
+            color: #555;
+        }
+
+        .add-review-form {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .add-review-form h4 {
+            margin-top: 0;
+        }
+
+        .add-review-form input, .add-review-form textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .add-review-form button {
+            background: #007BFF;
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .add-review-form button:hover {
+            background: #0056b3;
+        }
+
+        .footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <h1>Electronics Store</h1>
+    </header>
+
+    <main class="container">
+        <section id="product-list" class="product-list"></section>
+
+        <section id="product-details" class="product-details-page">
+            <div class="back-btn" onclick="showProductList()">← Back to products</div>
+            <div id="details-content" class="details-grid"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Electronics Store. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const products = [
+            {
+                id: 1,
+                name: 'Dell XPS 13 Laptop',
+                image: 'images/img1.jpeg',
+                price: '$1299',
+                description: 'A powerful and sleek ultrabook perfect for professionals and students.',
+                specifications: {
+                    processor: 'Intel Core i7',
+                    ram: '16GB LPDDR4x',
+                    storage: '512GB SSD',
+                    display: '13.4" FHD+ InfinityEdge',
+                    os: 'Windows 11'
+                },
+                reviews: [
+                    { name: 'Alice', rating: 5, comment: 'Amazing performance and battery life!' },
+                    { name: 'Bob', rating: 4, comment: 'Great display, but could use more ports.' }
+                ]
+            },
+            {
+                id: 2,
+                name: 'Sony WH-1000XM5 Headphones',
+                image: 'images/img2.jpeg',
+                price: '$349',
+                description: 'Industry-leading noise cancellation with exceptional sound quality.',
+                specifications: {
+                    type: 'Over-ear headphones',
+                    'noise-cancellation': 'Yes, dual processor',
+                    battery: 'Up to 30 hours',
+                    connectivity: 'Bluetooth 5.2'
+                },
+                reviews: [
+                    { name: 'Charlie', rating: 5, comment: 'Best headphones I have ever owned. The noise canceling is superb.' },
+                    { name: 'Diana', rating: 5, comment: 'Comfortable for long periods and the sound is fantastic.' }
+                ]
+            },
+            {
+                id: 3,
+                name: 'Samsung 55" 4K Smart TV',
+                image: 'images/img3.jpeg',
+                price: '$899',
+                description: 'Experience stunning visuals with vibrant colors and sharp detail.',
+                specifications: {
+                    resolution: '4K Ultra HD',
+                    size: '55 inches',
+                    'smart-features': 'Tizen OS, voice assistant',
+                    ports: '3 HDMI, 2 USB'
+                },
+                reviews: [
+                    { name: 'Ethan', rating: 4, comment: 'A great TV for the price. Picture quality is excellent.' },
+                    { name: 'Fiona', rating: 3, comment: 'Remote can be a bit clunky, but the picture is great.' }
+                ]
+            },
+             {
+                id: 4,
+                name: 'Apple iPad Air',
+                image: 'images/img4.jpeg',
+                price: '$599',
+                description: 'A versatile tablet with a powerful M1 chip and stunning display.',
+                specifications: {
+                    processor: 'Apple M1 Chip',
+                    display: '10.9-inch Liquid Retina',
+                    storage: '64GB or 256GB',
+                    connectivity: 'Wi-Fi, Optional Cellular'
+                },
+                reviews: [
+                    { name: 'George', rating: 5, comment: 'Perfect for creative work and entertainment.' },
+                    { name: 'Hannah', rating: 5, comment: 'Fast and lightweight. The battery lasts all day.' }
+                ]
+            }
+        ];
+
+        const productListSection = document.getElementById('product-list');
+        const productDetailsSection = document.getElementById('product-details');
+        const detailsContent = document.getElementById('details-content');
+
+        function renderProductList() {
+            productListSection.innerHTML = '';
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.classList.add('product-card');
+                card.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.price}</p>
+                `;
+                card.onclick = () => showProductDetails(product);
+                productListSection.appendChild(card);
+            });
+        }
+
+        function showProductDetails(product) {
+            productListSection.style.display = 'none';
+            productDetailsSection.style.display = 'block';
+
+            let specsHtml = '<h4>Specifications</h4><ul>';
+            for (const [key, value] of Object.entries(product.specifications)) {
+                specsHtml += `<li><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</li>`;
+            }
+            specsHtml += '</ul>';
+
+            let reviewsHtml = '<h4>Customer Reviews</h4>';
+            product.reviews.forEach(review => {
+                reviewsHtml += `
+                    <div class="review">
+                        <h5>${review.name} - ${'⭐'.repeat(review.rating)}</h5>
+                        <p>${review.comment}</p>
+                    </div>
+                `;
+            });
+            
+            reviewsHtml += `
+                <div class="add-review-form">
+                    <h4>Add Your Review</h4>
+                    <form onsubmit="addReview(event, ${product.id})">
+                        <input type="text" id="reviewer-name" placeholder="Your Name" required>
+                        <input type="number" id="reviewer-rating" placeholder="Rating (1-5)" min="1" max="5" required>
+                        <textarea id="reviewer-comment" placeholder="Your Review" rows="4" required></textarea>
+                        <button type="submit">Submit Review</button>
+                    </form>
+                </div>
+            `;
+
+            detailsContent.innerHTML = `
+                <div class="image-container">
+                    <img src="${product.image}" alt="${product.name}">
+                </div>
+                <div>
+                    <h2>${product.name}</h2>
+                    <p style="font-size: 1.2em; color: #007BFF; font-weight: bold;">${product.price}</p>
+                    <p>${product.description}</p>
+                    <div class="specs-list">${specsHtml}</div>
+                    <div class="reviews-section">${reviewsHtml}</div>
+                </div>
+            `;
+        }
+
+        function showProductList() {
+            productListSection.style.display = 'grid';
+            productDetailsSection.style.display = 'none';
+        }
+
+        function addReview(event, productId) {
+            event.preventDefault();
+            const name = document.getElementById('reviewer-name').value;
+            const rating = parseInt(document.getElementById('reviewer-rating').value);
+            const comment = document.getElementById('reviewer-comment').value;
+
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                const newReview = { name, rating, comment };
+                product.reviews.push(newReview);
+                showProductDetails(product); // Re-render the details page to show the new review
+            }
+        }
+
+        // Initial render
+        document.addEventListener('DOMContentLoaded', renderProductList);
+    </script>
+</body>
+</html>
